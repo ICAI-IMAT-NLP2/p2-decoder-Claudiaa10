@@ -26,9 +26,9 @@ class AttentionHead(nn.Module):
         super(AttentionHead, self).__init__()
 
         # TODO: Initialize the linear layers required for the query, key, and value projections.
-        self.wq = None
-        self.wk = None
-        self.wv = None
+        self.wq = nn.Linear(d_q,d_model)
+        self.wk = nn.Linear(d_k,d_model)
+        self.wv = nn.Linear(d_v,d_model)
 
     def scaled_dot_product_attention(self, q, k, v, mask=None):
         """Calculate the attention weights with optional causal mask.
@@ -118,9 +118,9 @@ class FeedForward(nn.Module):
     def __init__(self, d_model: int, intermediate_size: int):
         super(FeedForward, self).__init__()
         # TODO: Define the different layers 
-        self.linear_1 = None
-        self.linear_2 = None
-        self.gelu = None
+        self.linear_1 = nn.Linear(d_model,intermediate_size)
+        self.linear_2 = nn.Linear(intermediate_size,d_model)
+        self.gelu = nn.GELU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass through the feed-forward network.
@@ -132,7 +132,7 @@ class FeedForward(nn.Module):
             torch.Tensor: Output tensor of shape (batch_size, seq_len, d_model).
         """
         # TODO: Implement the forward pass for the feed-forward network
-        x = None
+        x = self.linear_2(self.gelu(self.linear_1(x)))
         return x
 
 class TransformerDecoderLayer(nn.Module):
